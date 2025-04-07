@@ -10,5 +10,4 @@ namespace MyWebApi.Models
         public List<Category> SubCategories { get; set; } = new();
         public List<Product> Products { get; set; } = new();
     }
-
 }

@@ -9,5 +9,6 @@ namespace MyWebApi.Models
         public Address? BillingAddress { get; set; }
 
         public List<Order> Orders { get; set; } = new();
+        public List<ProductReview> Reviews { get; set; } = new();
     }
 }

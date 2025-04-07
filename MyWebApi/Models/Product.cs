@@ -8,5 +8,7 @@ namespace MyWebApi.Models
 
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
+        public List<ProductReview> Reviews { get; set; } = new();
+        public List<PriceHistory> PriceHistories { get; set; } = new();
     }
 }
