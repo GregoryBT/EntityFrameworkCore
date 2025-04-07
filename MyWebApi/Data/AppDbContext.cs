@@ -17,6 +17,13 @@ namespace Data
         public DbSet<Order>? Orders { get; set; }
         // DbSet pour la table "OrderItems"
         public DbSet<OrderItem>? OrderItems { get; set; }
-
+        // DbSet pour la table "Addresses"
+        public DbSet<Address>? Addresses { get; set; }
+        // DbSet pour la table "PriceHistory"
+        public DbSet<PriceHistory>? PriceHistories { get; set; }
+        // DbSet pour la table "ProductReviews"
+        public DbSet<ProductReview>? ProductReviews { get; set; }
+        // DbSet pour la table "Stock"
+        public DbSet<Stock>? Stocks { get; set; }
     }
 }
