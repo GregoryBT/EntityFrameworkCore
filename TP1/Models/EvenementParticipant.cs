@@ -2,7 +2,7 @@ namespace TP1.Models;
 
 public class EvenementParticipant
 {
-    public string DateInscription { get; set; }
+    public string DateInscription { get; set; } = string.Empty;
     public string StatutPresence { get; set; } = string.Empty;
 
     public int EvenementId { get; set; }
