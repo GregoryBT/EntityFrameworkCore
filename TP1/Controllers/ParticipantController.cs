@@ -15,37 +15,54 @@ public class ParticipantController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Participant> GetParticipants()
+    public ActionResult<IEnumerable<Participant>> GetParticipants()
     {
-        return Enumerable.Range(1, 5).Select(index => new Participant
+        try
         {
-            Id = index,
-            Nom = "Participant " + index,
-            Prenom = "Prénom " + index,
-            Email = "email" + index + "@example.com",
-            Telephone = "0123456789",
-        })
-        .ToArray();
+            var participants = Enumerable.Range(1, 5).Select(index => new Participant
+            {
+                Id = index,
+                Nom = "Participant " + index,
+                Prenom = "Prénom " + index,
+                Email = "email" + index + "@example.com",
+                Telephone = "0123456789",
+            }).ToArray();
+
+            return Ok(participants);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la récupération des participants.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpGet("{id}")]
     public ActionResult<Participant> GetParticipantById(int id)
     {
-        var participant = new Participant
+        try
         {
-            Id = id,
-            Nom = "Participant " + id,
-            Prenom = "Prénom " + id,
-            Email = "email" + id + "@example.com",
-            Telephone = "0123456789",
-        };
+            var participant = new Participant
+            {
+                Id = id,
+                Nom = "Participant " + id,
+                Prenom = "Prénom " + id,
+                Email = "email" + id + "@example.com",
+                Telephone = "0123456789",
+            };
 
-        if (participant == null)
-        {
-            return NotFound();
+            if (participant == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(participant);
         }
-
-        return Ok(participant);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la récupération du participant.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpPost]
@@ -56,10 +73,18 @@ public class ParticipantController : ControllerBase
             return BadRequest("Participant invalide.");
         }
 
-        // Simuler l'ajout du participant à la base de données
-        participant.Id = new Random().Next(1, 1000); // Simuler un ID généré par la base de données
+        try
+        {
+            // Simuler l'ajout du participant à la base de données
+            participant.Id = new Random().Next(1, 1000); // Simuler un ID généré par la base de données
 
-        return CreatedAtAction(nameof(GetParticipantById), new { id = participant.Id }, participant);
+            return CreatedAtAction(nameof(GetParticipantById), new { id = participant.Id }, participant);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la création du participant.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpPut("{id}")]
@@ -70,15 +95,30 @@ public class ParticipantController : ControllerBase
             return BadRequest("Participant invalide.");
         }
 
-        // Simuler la mise à jour du participant dans la base de données
-        return NoContent();
+        try
+        {
+            // Simuler la mise à jour du participant dans la base de données
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la mise à jour du participant.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpDelete("{id}")]
     public ActionResult DeleteParticipant(int id)
     {
-        // Simuler la suppression du participant de la base de données
-        return NoContent();
+        try
+        {
+            // Simuler la suppression du participant de la base de données
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la suppression du participant.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
-
 }

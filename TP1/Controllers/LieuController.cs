@@ -19,23 +19,41 @@ public class LieuController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Lieu> GetLieux()
+    public ActionResult<IEnumerable<Lieu>> GetLieux()
     {
-        return _context.Lieux.ToList();
+        try
+        {
+            var lieux = _context.Lieux.ToList();
+            return Ok(lieux);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la récupération des lieux.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpGet("{id}")]
     public ActionResult<Lieu> GetLieuById(int id)
     {
-        var lieu = _context.Lieux.FirstOrDefault(l => l.Id == id);
-
-        if (lieu == null)
+        try
         {
-            return NotFound();
-        }
+            var lieu = _context.Lieux.FirstOrDefault(l => l.Id == id);
 
-        return Ok(lieu);
+            if (lieu == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(lieu);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la récupération du lieu.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
+
     [HttpPost]
     public ActionResult<Lieu> CreateLieu([FromBody] Lieu lieu)
     {
@@ -55,22 +73,9 @@ public class LieuController : ControllerBase
             // Retourne une réponse "Created" avec le lieu ajouté
             return CreatedAtAction(nameof(GetLieuById), new { id = lieu.Id }, lieu);
         }
-        catch (DbUpdateException dbEx)
-        {
-            // Erreur spécifique lors de la mise à jour de la base de données
-            _logger.LogError(dbEx, "Erreur lors de l'ajout du lieu à la base de données.");
-            return StatusCode(500, "Une erreur est survenue lors de la sauvegarde du lieu.");
-        }
-        catch (TimeoutException timeoutEx)
-        {
-            // Erreur de timeout de la base de données
-            _logger.LogError(timeoutEx, "Le délai de connexion à la base de données a expiré.");
-            return StatusCode(504, "Délai de connexion dépassé. Veuillez réessayer plus tard.");
-        }
         catch (Exception ex)
         {
-            // Gestion d'autres erreurs générales
-            _logger.LogError(ex, "Une erreur inattendue est survenue.");
+            _logger.LogError(ex, "Une erreur est survenue lors de la mise à jour du lieu.");
             return StatusCode(500, "Une erreur inattendue est survenue.");
         }
     }
@@ -83,33 +88,48 @@ public class LieuController : ControllerBase
             return BadRequest("Lieu invalide.");
         }
 
-        var existingLieu = _context.Lieux.FirstOrDefault(l => l.Id == id);
-        if (existingLieu == null)
+        try
         {
-            return NotFound();
+            var existingLieu = _context.Lieux.FirstOrDefault(l => l.Id == id);
+            if (existingLieu == null)
+            {
+                return NotFound();
+            }
+
+            existingLieu.Nom = lieu.Nom;
+            existingLieu.Adresse = lieu.Adresse;
+
+            _context.SaveChanges();
+
+            return NoContent();
         }
-
-        existingLieu.Nom = lieu.Nom;
-        existingLieu.Adresse = lieu.Adresse;
-
-        _context.SaveChanges();
-
-        return NoContent();
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la mise à jour du lieu.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpDelete("{id}")]
     public ActionResult DeleteLieu(int id)
     {
-        var lieu = _context.Lieux.FirstOrDefault(l => l.Id == id);
-        if (lieu == null)
+        try
         {
-            return NotFound();
+            var lieu = _context.Lieux.FirstOrDefault(l => l.Id == id);
+            if (lieu == null)
+            {
+                return NotFound();
+            }
+
+            _context.Lieux.Remove(lieu);
+            _context.SaveChanges();
+
+            return NoContent();
         }
-
-        _context.Lieux.Remove(lieu);
-        _context.SaveChanges();
-
-        return NoContent();
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la suppression du lieu.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
-
 }

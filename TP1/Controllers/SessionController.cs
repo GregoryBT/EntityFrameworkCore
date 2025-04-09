@@ -15,36 +15,53 @@ public class SessionController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<Session> GetSessions()
+    public ActionResult<IEnumerable<Session>> GetSessions()
     {
-        return Enumerable.Range(1, 5).Select(index => new Session
+        try
         {
-            Id = index,
-            HeureDebut = DateTime.Now.AddHours(index),
-            HeureFin = DateTime.Now.AddHours(index + 1),
-            EvenementId = index,
+            var sessions = Enumerable.Range(1, 5).Select(index => new Session
+            {
+                Id = index,
+                HeureDebut = DateTime.Now.AddHours(index),
+                HeureFin = DateTime.Now.AddHours(index + 1),
+                EvenementId = index,
+            })
+            .ToArray();
 
-        })
-        .ToArray();
+            return Ok(sessions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la récupération des sessions.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpGet("{id}")]
     public ActionResult<Session> GetSessionById(int id)
     {
-        var session = new Session
+        try
         {
-            Id = id,
-            HeureDebut = DateTime.Now.AddHours(id),
-            HeureFin = DateTime.Now.AddHours(id + 1),
-            EvenementId = id,
-        };
+            var session = new Session
+            {
+                Id = id,
+                HeureDebut = DateTime.Now.AddHours(id),
+                HeureFin = DateTime.Now.AddHours(id + 1),
+                EvenementId = id,
+            };
 
-        if (session == null)
-        {
-            return NotFound();
+            if (session == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(session);
         }
-
-        return Ok(session);
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la récupération de la session.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpPost]
@@ -55,10 +72,18 @@ public class SessionController : ControllerBase
             return BadRequest("Session invalide.");
         }
 
-        // Simuler l'ajout du session à la base de données
-        session.Id = new Random().Next(1, 1000); // Simuler un ID généré par la base de données
+        try
+        {
+            // Simuler l'ajout de la session à la base de données
+            session.Id = new Random().Next(1, 1000); // Simuler un ID généré par la base de données
 
-        return CreatedAtAction(nameof(GetSessionById), new { id = session.Id }, session);
+            return CreatedAtAction(nameof(GetSessionById), new { id = session.Id }, session);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la création de la session.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpPut("{id}")]
@@ -69,15 +94,30 @@ public class SessionController : ControllerBase
             return BadRequest("Session invalide.");
         }
 
-        // Simuler la mise à jour du session dans la base de données
-        return NoContent();
+        try
+        {
+            // Simuler la mise à jour de la session dans la base de données
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la mise à jour de la session.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
     [HttpDelete("{id}")]
     public ActionResult DeleteSession(int id)
     {
-        // Simuler la suppression du session de la base de données
-        return NoContent();
+        try
+        {
+            // Simuler la suppression de la session de la base de données
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Une erreur est survenue lors de la suppression de la session.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
-
 }
