@@ -1,5 +1,7 @@
-using Data;
+using TP1.Data;
 using Microsoft.EntityFrameworkCore;
+using TP1.Services;
+using TP1.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,21 @@ builder.Services.AddSwaggerGen();
 // Ajouter le DbContext à l'injection de dépendances
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+// Service Injection
+builder.Services.AddScoped<IEvenementService, EvenementService>();
+// Repository Injection
+builder.Services.AddScoped<IEvenementRepository, EvenementRepository>();
+builder.Services.AddScoped<IEvenementParticipantRepository, EvenementParticipantRepository>();
+builder.Services.AddScoped<IIntervenantRepository, IntervenantRepository>();
+builder.Services.AddScoped<ILieuRepository, LieuRepository>();
+builder.Services.AddScoped<INotationRepository, NotationRepository>();
+builder.Services.AddScoped<IParticipantRepository, ParticipantRepository>();
+builder.Services.AddScoped<ISalleRepository, SalleRepository>();
+builder.Services.AddScoped<ISessionIntervenantRepository, SessionIntervenantRepository>();
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+
 
 var app = builder.Build();
 

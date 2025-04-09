@@ -1,17 +1,23 @@
-public interface INotationRepository : IRepository<Notation>
+using TP1.Models;
+using TP1.Data;
+
+namespace TP1.Repositories;
+
+public interface IParticipantRepository : IRepository<Participant>
 {
     /// Ajouter les méthodes spécifiques au produit ici
-    /// Exemple : IEnumerable<Notation> GetNotationsByCategory(int categoryId);
+    /// Exemple : IEnumerable<Participant> GetParticipantsByCategory(int categoryId);
 }
-public class NotationRepository : Repository<Notation>, INotationRepository {
+public class ParticipantRepository : Repository<Participant>, IParticipantRepository
+{
     // Référence typée au contexte
-    private ApplicationDbContext AppDbContext => (ApplicationDbContext) _context;
+    private AppDbContext AppDbContext => (AppDbContext)_context;
     // Constructeur
-    public NotationRepository(ApplicationDbContext context) : base(context) { }
+    public ParticipantRepository(AppDbContext context) : base(context) { }
     /// Ajouter les méthodes spécifiques au produit ici
     /// Exemple :
-    // public IEnumerable<Notation> GetNotationsByCategory(int categoryId) {
-    //     return AppDbContext.Notations
+    // public IEnumerable<Participant> GetParticipantsByCategory(int categoryId) {
+    //     return AppDbContext.Participants
     //         .Where(p => p.CategoryId == categoryId)
     //         .ToList();
     // }

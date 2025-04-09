@@ -1,3 +1,8 @@
+using System.Linq.Expressions;
+using TP1.Data;
+
+namespace TP1.Repositories;
+
 // Interface de base
 public interface IRepository<T> where T : class
 {
@@ -12,7 +17,7 @@ public interface IRepository<T> where T : class
     void Update(T entity);
     void Remove(T entity);
     void RemoveRange(IEnumerable<T> entities);
-    
+
     // Sauvegarde
     int SaveChanges();
 }
@@ -20,45 +25,55 @@ public interface IRepository<T> where T : class
 // Class de base pour les repositories
 public class Repository<T> : IRepository<T> where T : class
 {
-    protected readonly DbContext _context;
+    protected readonly AppDbContext _context;
 
-    public Repository(DbContext context) {
+    public Repository(AppDbContext context)
+    {
         _context = context;
     }
 
-    public IEnumerable<T> GetAll(){
+    public IEnumerable<T> GetAll()
+    {
         return _context.Set<T>().ToList();
     }
 
-    public T GetById(int id) {
-        return _context.Set<T>().Find(id);
+    public T GetById(int id)
+    {
+        return _context.Set<T>().Find(id)!;
     }
 
-    public IEnumerable<T> Find(Expression<Func<T, bool>> predicate) {
+    public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
+    {
         return _context.Set<T>().Where(predicate).ToList();
     }
 
-    public void Add(T entity) {
+    public void Add(T entity)
+    {
         _context.Set<T>().Add(entity);
     }
 
-    public void AddRange(IEnumerable<T> entities) {
-    _context.Set<T>().AddRange(entities);
+    public void AddRange(IEnumerable<T> entities)
+    {
+        _context.Set<T>().AddRange(entities);
     }
 
-    public void Update(T entity){
+    public void Update(T entity)
+    {
         _context.Set<T>().Update(entity);
     }
 
-    public void Remove(T entity) {
+    public void Remove(T entity)
+    {
         _context.Set<T>().Remove(entity);
     }
 
-    public void RemoveRange(IEnumerable<T> entities) {
+    public void RemoveRange(IEnumerable<T> entities)
+    {
         _context.Set<T>().RemoveRange(entities);
     }
 
-    public int SaveChanges() {
+    public int SaveChanges()
+    {
         return _context.SaveChanges();
     }
 }

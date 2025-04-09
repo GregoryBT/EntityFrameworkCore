@@ -1,12 +1,12 @@
 using TP1.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data
+namespace TP1.Data
 {
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-        
+
         public DbSet<Evenement> Evenements { get; set; } = null!;
         public DbSet<EvenementParticipant> EvenementParticipants { get; set; } = null!;
         public DbSet<Intervenant> Intervenants { get; set; } = null!;
@@ -83,7 +83,7 @@ namespace Data
                 .WithMany(l => l.Salles)
                 .HasForeignKey(s => s.LieuId);
 
-            
+
             // Seed data
             // Lieu
             modelBuilder.Entity<Lieu>().HasData(
@@ -101,9 +101,9 @@ namespace Data
 
             // Evenement
             modelBuilder.Entity<Evenement>().HasData(
-                new Evenement { Id = 1, Titre = "Tech 2025", Description = "Conférence tech.", DateDebut = "2025-09-04", DateFin =  "2025-09-04", Statut = "Ouvert", Categorie = "Tech", LieuId = 1 },
-                new Evenement { Id = 2, Titre = "IA Summit", Description = "Sommet sur l'IA.", DateDebut = "2025-09-04", DateFin =  "2025-09-04", Statut = "Complet", Categorie = "IA", LieuId = 2 },
-                new Evenement { Id = 3, Titre = "Web3 Days", Description = "Événement blockchain.", DateDebut = "2025-09-04", DateFin =  "2025-09-04", Statut = "Ouvert", Categorie = "Blockchain", LieuId = 3 }
+                new Evenement { Id = 1, Titre = "Tech 2025", Description = "Conférence tech.", DateDebut = "2025-09-04", DateFin = "2025-09-04", Statut = "Ouvert", Categorie = "Tech", LieuId = 1 },
+                new Evenement { Id = 2, Titre = "IA Summit", Description = "Sommet sur l'IA.", DateDebut = "2025-09-04", DateFin = "2025-09-04", Statut = "Complet", Categorie = "IA", LieuId = 2 },
+                new Evenement { Id = 3, Titre = "Web3 Days", Description = "Événement blockchain.", DateDebut = "2025-09-04", DateFin = "2025-09-04", Statut = "Ouvert", Categorie = "Blockchain", LieuId = 3 }
             );
 
             // Participant
@@ -115,10 +115,10 @@ namespace Data
 
             // EvenementParticipant
             modelBuilder.Entity<EvenementParticipant>().HasData(
-                new EvenementParticipant { EvenementId = 1, ParticipantId = 1, DateInscription =  "2025-09-04", StatutPresence = "Présente" },
-                new EvenementParticipant { EvenementId = 1, ParticipantId = 2, DateInscription =  "2025-09-04", StatutPresence = "Présent" },
-                new EvenementParticipant { EvenementId = 2, ParticipantId = 3, DateInscription =  "2025-09-04", StatutPresence = "Présente" }
-            ); 
+                new EvenementParticipant { EvenementId = 1, ParticipantId = 1, DateInscription = "2025-09-04", StatutPresence = "Présente" },
+                new EvenementParticipant { EvenementId = 1, ParticipantId = 2, DateInscription = "2025-09-04", StatutPresence = "Présent" },
+                new EvenementParticipant { EvenementId = 2, ParticipantId = 3, DateInscription = "2025-09-04", StatutPresence = "Présente" }
+            );
 
             // Session
             modelBuilder.Entity<Session>().HasData(

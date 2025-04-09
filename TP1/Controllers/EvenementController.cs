@@ -1,8 +1,6 @@
-using Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using TP1.Models;
 using TP1.Services;
+using TP1.DTOs;
 
 namespace TP1.Controllers;
 
@@ -10,11 +8,14 @@ namespace TP1.Controllers;
 [Route("[controller]")]
 public class EvenementController : ControllerBase
 {
+    private readonly ILogger<EvenementController> _logger;
     private readonly IEvenementService _evenementService;
 
     // Injecter IEvenementService via le constructeur
-    public EvenementController(IEvenementService evenementService)
+    public EvenementController(ILogger<EvenementController> logger, IEvenementService evenementService)
     {
+
+        _logger = logger;
         _evenementService = evenementService;
     }
 
@@ -22,102 +23,85 @@ public class EvenementController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllEvenements()
     {
-        var evenements = await _evenementService.GetAllEventsAsync();
-        return Ok(evenements);  // Retourne les événements sous forme de réponse HTTP
+        try
+        {
+            // Appeler le service pour récupérer tous les événements
+            var evenements = await _evenementService.GetAllEvenements();
+            // Retourner les événements au format JSON
+            return Ok(evenements);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            _logger.LogError(ex, "Une erreur est survenue lors de la récupération des événements.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
     }
 
-    // [HttpGet("{id}")]
-    // public ActionResult<Evenement> GetEvenementById(int id)
-    // {
-    //     try
-    //     {
-    //         var evenement = _context.Evenements.FirstOrDefault(l => l.Id == id);
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetEvenementById(int id)
+    {
+        try
+        {
+            var evenement = await _evenementService.GetEvenementById(id);
+            return Ok(evenement);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            _logger.LogError(ex, "Une erreur est survenue lors de la récupération des événements.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
+    }
 
-    //         if (evenement == null)
-    //         {
-    //             return NotFound();
-    //         }
+    [HttpPost]
+    public async Task<IActionResult> CreateEvenement([FromBody] EvenementDTO evenementDto)
+    {
+        try
+        {
+            // Appeler le service pour créer un nouvel événement
+            var createdEvenement = await _evenementService.CreateEvenement(evenementDto);
+            return CreatedAtAction(nameof(GetEvenementById), new { id = createdEvenement.Id }, createdEvenement);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            _logger.LogError(ex, "Une erreur est survenue lors de la création de l'événement.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
+    }
 
-    //         return Ok(evenement);
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         _logger.LogError(ex, "Une erreur est survenue lors de la récupération du lieu.");
-    //         return StatusCode(500, "Une erreur inattendue est survenue.");
-    //     }
-    // }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateEvenement(int id, [FromBody] EvenementDTO evenementDto)
+    {
+        try
+        {
+            // Appeler le service pour mettre à jour l'événement
+            var updatedEvenement = await _evenementService.UpdateEvenement(id, evenementDto);
+            return Ok(updatedEvenement);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            _logger.LogError(ex, "Une erreur est survenue lors de la mise à jour de l'événement.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
+    }
 
-    // [HttpPost]
-    // public ActionResult<Evenement> CreateEvenement([FromBody] Evenement evenement)
-    // {
-    //     if (evenement == null)
-    //     {
-    //         return BadRequest("Le lieu ne peut pas être nul.");
-    //     }
-
-    //     try
-    //     {
-    //         _context.Evenements.Add(evenement);
-    //         _context.SaveChanges();
-
-    //         return CreatedAtAction(nameof(GetEvenementById), new { id = evenement.Id }, evenement);
-    //     }
-    //     catch (DbUpdateException ex)
-    //     {
-    //         _logger.LogError(ex, "Erreur lors de la création du lieu.");
-    //         return StatusCode(500, "Erreur lors de la création du lieu.");
-    //     }
-    // }
-
-    // [HttpPut("{id}")]
-    // public ActionResult<Evenement> UpdateEvenement(int id, [FromBody] Evenement evenement)
-    // {
-    //     if (evenement == null || id != evenement.Id)
-    //     {
-    //         return BadRequest("Le lieu ne peut pas être nul.");
-    //     }
-
-    //     try
-    //     {
-    //         var existingEvenement = _context.Evenements.FirstOrDefault(l => l.Id == id);
-    //         if (existingEvenement == null)
-    //         {
-    //             return NotFound();
-    //         }
-
-    //         _context.Entry(existingEvenement).CurrentValues.SetValues(evenement);
-    //         _context.SaveChanges();
-
-    //         return Ok(existingEvenement);
-    //     }
-    //     catch (DbUpdateException ex)
-    //     {
-    //         _logger.LogError(ex, "Erreur lors de la mise à jour du lieu.");
-    //         return StatusCode(500, "Erreur lors de la mise à jour du lieu.");
-    //     }
-    // }
-
-    // [HttpDelete("{id}")]
-    // public ActionResult DeleteEvenement(int id)
-    // {
-    //     try
-    //     {
-    //         var evenement = _context.Evenements.FirstOrDefault(l => l.Id == id);
-    //         if (evenement == null)
-    //         {
-    //             return NotFound();
-    //         }
-
-    //         _context.Evenements.Remove(evenement);
-    //         _context.SaveChanges();
-
-    //         return NoContent();
-    //     }
-    //     catch (DbUpdateException ex)
-    //     {
-    //         _logger.LogError(ex, "Erreur lors de la suppression du lieu.");
-    //         return StatusCode(500, "Erreur lors de la suppression du lieu.");
-    //     }
-    // }
-
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteEvenement(int id)
+    {
+        try
+        {
+            // Appeler le service pour supprimer l'événement
+            await _evenementService.DeleteEvenement(id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            _logger.LogError(ex, "Une erreur est survenue lors de la suppression de l'événement.");
+            return StatusCode(500, "Une erreur inattendue est survenue.");
+        }
+    }
 }

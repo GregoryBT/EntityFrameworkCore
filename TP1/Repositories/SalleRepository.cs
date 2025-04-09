@@ -1,13 +1,19 @@
+using TP1.Models;
+using TP1.Data;
+
+namespace TP1.Repositories;
+
 public interface ISalleRepository : IRepository<Salle>
 {
     /// Ajouter les méthodes spécifiques au produit ici
     /// Exemple : IEnumerable<Salle> GetSallesByCategory(int categoryId);
 }
-public class SalleRepository : Repository<Salle>, ISalleRepository {
+public class SalleRepository : Repository<Salle>, ISalleRepository
+{
     // Référence typée au contexte
-    private ApplicationDbContext AppDbContext => (ApplicationDbContext) _context;
+    private AppDbContext AppDbContext => (AppDbContext)_context;
     // Constructeur
-    public SalleRepository(ApplicationDbContext context) : base(context) { }
+    public SalleRepository(AppDbContext context) : base(context) { }
     /// Ajouter les méthodes spécifiques au produit ici
     /// Exemple :
     // public IEnumerable<Salle> GetSallesByCategory(int categoryId) {
