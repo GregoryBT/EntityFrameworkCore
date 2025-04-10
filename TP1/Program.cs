@@ -20,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Service Injection
 builder.Services.AddScoped<IEvenementService, EvenementService>();
 builder.Services.AddScoped<IEvenementParticipantService, EvenementParticipantService>();
+builder.Services.AddScoped<IIntervenantService, IntervenantService>();
 // Repository Injection
 builder.Services.AddScoped<IEvenementRepository, EvenementRepository>();
 builder.Services.AddScoped<IEvenementParticipantRepository, EvenementParticipantRepository>();

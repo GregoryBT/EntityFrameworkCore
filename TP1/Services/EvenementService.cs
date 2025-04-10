@@ -44,6 +44,11 @@ public class EvenementService : IEvenementService
     public Task<EvenementDTO> GetEvenementById(int id)
     {
         var _event = _EvenementRepository.GetById(id);
+        if (_event == null)
+        {
+            throw new KeyNotFoundException($"Evenement with id {id} not found.");
+        }
+
         var dtos = new EvenementDTO
         {
             Id = _event.Id,
@@ -81,7 +86,7 @@ public class EvenementService : IEvenementService
         var _event = _EvenementRepository.GetById(id);
         if (_event == null)
         {
-            throw new ArgumentException("Evenement introuvable");
+            throw new KeyNotFoundException($"Evenement with id {id} not found.");
         }
 
         _event.Titre = evenementDto.Titre;
@@ -101,7 +106,7 @@ public class EvenementService : IEvenementService
         var _event = _EvenementRepository.GetById(id);
         if (_event == null)
         {
-            return Task.FromResult(false);
+            throw new KeyNotFoundException($"Evenement with id {id} not found.");
         }
 
         _EvenementRepository.Remove(_event);

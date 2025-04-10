@@ -81,7 +81,7 @@ public class EvenementParticipantService : IEvenementParticipantService
         var ep = _EvenementParticipantRepository.GetById(id);
         if (ep == null)
         {
-            throw new ArgumentException("Evenement introuvable");
+            throw new KeyNotFoundException($"EvenementParticipant with id {id} not found.");
         }
 
         ep.DateInscription = evenementDto.DateInscription;
@@ -98,7 +98,7 @@ public class EvenementParticipantService : IEvenementParticipantService
         var _event = _EvenementParticipantRepository.GetById(id);
         if (_event == null)
         {
-            return Task.FromResult(false);
+            throw new KeyNotFoundException($"EvenementParticipant with id {id} not found.");
         }
 
         _EvenementParticipantRepository.Remove(_event);
