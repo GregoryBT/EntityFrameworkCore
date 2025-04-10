@@ -4,8 +4,8 @@ using TP1.Data;
 namespace TP1.Repositories;
 public interface IEvenementParticipantRepository : IRepository<EvenementParticipant>
 {
-    /// Ajouter les méthodes spécifiques au produit ici
-    /// Exemple : IEnumerable<EvenementParticipant> GetEvenementParticipantsByCategory(int categoryId);
+    IEnumerable<EvenementParticipant> GetEvenementsParticipantByParticipantId(int participantId);
+    IEnumerable<EvenementParticipant> GetEvenementsParticipantByEvenementId(int evenementId);
 }
 public class EvenementParticipantRepository : Repository<EvenementParticipant>, IEvenementParticipantRepository
 {
@@ -14,11 +14,17 @@ public class EvenementParticipantRepository : Repository<EvenementParticipant>, 
     private AppDbContext AppDbContext => (AppDbContext)_context;
     // Constructeur
     public EvenementParticipantRepository(AppDbContext context) : base(context) { }
-    /// Ajouter les méthodes spécifiques au produit ici
-    /// Exemple :
-    // public IEnumerable<EvenementParticipant> GetEvenementParticipantsByCategory(int categoryId) {
-    //     return AppDbContext.EvenementParticipants
-    //         .Where(p => p.CategoryId == categoryId)
-    //         .ToList();
-    // }
+
+    public IEnumerable<EvenementParticipant> GetEvenementsParticipantByParticipantId(int participantId)
+    {
+        return AppDbContext.EvenementParticipants
+            .Where(ep => ep.ParticipantId == participantId)
+            .ToList();
+    }
+    public IEnumerable<EvenementParticipant> GetEvenementsParticipantByEvenementId(int evenementId)
+    {
+        return AppDbContext.EvenementParticipants
+            .Where(ep => ep.EvenementId == evenementId)
+            .ToList();
+    }
 }
