@@ -5,8 +5,8 @@ namespace TP1.Repositories;
 
 public interface ISessionIntervenantRepository : IRepository<SessionIntervenant>
 {
-    /// Ajouter les méthodes spécifiques au produit ici
-    /// Exemple : IEnumerable<SessionIntervenant> GetSessionIntervenantsByCategory(int categoryId);
+    IEnumerable<SessionIntervenant> GetSessionIntervenantsBySessionId(int sessionId);
+    IEnumerable<SessionIntervenant> GetSessionIntervenantsByIntervenantId(int intervenantId);
 }
 public class SessionIntervenantRepository : Repository<SessionIntervenant>, ISessionIntervenantRepository
 {
@@ -14,11 +14,17 @@ public class SessionIntervenantRepository : Repository<SessionIntervenant>, ISes
     private AppDbContext AppDbContext => (AppDbContext)_context;
     // Constructeur
     public SessionIntervenantRepository(AppDbContext context) : base(context) { }
-    /// Ajouter les méthodes spécifiques au produit ici
-    /// Exemple :
-    // public IEnumerable<SessionIntervenant> GetSessionIntervenantsByCategory(int categoryId) {
-    //     return AppDbContext.SessionIntervenants
-    //         .Where(p => p.CategoryId == categoryId)
-    //         .ToList();
-    // }
+
+    public IEnumerable<SessionIntervenant> GetSessionIntervenantsBySessionId(int sessionId)
+    {
+        return AppDbContext.SessionIntervenants
+            .Where(si => si.SessionId == sessionId)
+            .ToList();
+    }
+    public IEnumerable<SessionIntervenant> GetSessionIntervenantsByIntervenantId(int intervenantId)
+    {
+        return AppDbContext.SessionIntervenants
+            .Where(si => si.IntervenantId == intervenantId)
+            .ToList();
+    }
 }

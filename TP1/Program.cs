@@ -21,6 +21,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IEvenementService, EvenementService>();
 builder.Services.AddScoped<IEvenementParticipantService, EvenementParticipantService>();
 builder.Services.AddScoped<IIntervenantService, IntervenantService>();
+builder.Services.AddScoped<ILieuService, LieuService>();
+builder.Services.AddScoped<INotationService, NotationService>();
+builder.Services.AddScoped<IParticipantService, ParticipantService>();
+builder.Services.AddScoped<ISalleService, SalleService>();
+builder.Services.AddScoped<ISessionIntervenantService, SessionIntervenantService>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 // Repository Injection
 builder.Services.AddScoped<IEvenementRepository, EvenementRepository>();
 builder.Services.AddScoped<IEvenementParticipantRepository, EvenementParticipantRepository>();
