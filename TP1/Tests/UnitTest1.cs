@@ -51,5 +51,35 @@ namespace TP1.Tests
             Assert.Equal("Category1", result.Categorie);
             Assert.Equal(1, result.LieuId);
         }
+
+        [Fact]
+        public async Task GetEvenementById_NonExistingId_ReturnsNull()
+        {
+            // Arrange
+            var data = new List<Evenement>
+                {
+                    new Evenement { Id = 1, Titre = "Test Product", Description = "Test Description", DateDebut = "2023-01-01", DateFin = "2023-01-02", Statut = "Active", Categorie = "Category1", LieuId = 1 },
+                    new Evenement { Id = 2, Titre = "Another Product", Description = "Another Description", DateDebut = "2023-02-01", DateFin = "2023-02-02", Statut = "Inactive", Categorie = "Category2", LieuId = 2 }
+                }.AsQueryable();
+
+            var mockSet = new Mock<DbSet<Evenement>>();
+            mockSet.As<IQueryable<Evenement>>().Setup(m => m.Provider).Returns(data.Provider);
+            mockSet.As<IQueryable<Evenement>>().Setup(m => m.Expression).Returns(data.Expression);
+            mockSet.As<IQueryable<Evenement>>().Setup(m => m.ElementType).Returns(data.ElementType);
+            mockSet.As<IQueryable<Evenement>>().Setup(m => m.GetEnumerator()).Returns(data.GetEnumerator());
+            mockSet.Setup(m => m.Find(It.IsAny<object[]>()))
+                   .Returns((object[] ids) => data.FirstOrDefault(p => p.Id == (int)ids[0]));
+
+            // Mock du repository
+            var mockRepository = new Mock<IEvenementRepository>();
+            mockRepository.Setup(repo => repo.GetById(It.IsAny<int>()))
+                          .Returns((int id) => data.FirstOrDefault(e => e.Id == id));
+
+            var service = new EvenementService(mockRepository.Object);
+
+            // Envoie de la requête
+            var exception = await Assert.ThrowsAsync<KeyNotFoundException>(() => service.GetEvenementById(3));
+            Assert.Equal("Evenement with id 3 not found.", exception.Message);
+        }
     }
 }
